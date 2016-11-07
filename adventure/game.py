@@ -5,19 +5,20 @@ from advent import NORTH, SOUTH, EAST, WEST, UP, DOWN, RIGHT, LEFT, IN, OUT, FOR
 
 game = Game("Teh Coolest Game")
 
+# LOCATIONS
 room = game.new_location(
   "Room",
 """You wake up in a decrepit room. There are no doors or windows. In front of you, hanging on the wall, is a painting.
 To your right is a bookshelf, filled with books. In the corner of the room there is a strange looking rug."""
 )
 
-painting = game.new_location(
+painting1 = game.new_location(
   "Painting",
-"""You walk up to the painting. The painting is of a person screaming. Something seems off about the painting."""
+"""The painting is of a person screaming. Something seems off about it."""
 )
 
-# A new container
-safe = painting.add_object(Container ("An old safe", "A very old safe with a four digit lock"))
+safe1 = game.new_location("Safe",
+"""this is a safe""")
 
 bookshelf = game.new_location(
   "Bookshelf",
@@ -39,31 +40,62 @@ cellar = game.new_location(
 """The trap door leads to a dark cellar. Where could it lead?"""
 )
 
-game.new_connection("Painting", room, painting, [FORWARD], [BACK])
-game.new_connection("Safe", painting, safe,[IN, FORWARD], [OUT, BACK])
+# CONTAINERS
+painting2 = painting1.add_object(Container("painting", "A painting of a man screaming"))
+
+safe2 = safe1.add_object(Container("an old safe", "A very old safe with a four digit lock"))
+
+
+# CONNECTIONS
+game.new_connection("Painting", room, painting1, [FORWARD], [BACK])
+game.new_connection("Safe", painting1, safe1,[IN, FORWARD], [OUT, BACK])
 game.new_connection("Bookshelf", room, bookshelf, [LEFT], [RIGHT])
 game.new_connection("Rug", room, rug, [RIGHT], [LEFT])
 game.new_connection("Trapdoor", rug, trapdoor, [RIGHT], [LEFT])
 game.new_connection("Cellar", trapdoor, cellar, [RIGHT], [LEFT])
 
-safe.new_object("Key",
-"""An old key"""
-)
 
-# Now let's add a thing, a key, by providing a single word name and a longer
-# description.
-key  = safe.new_object("key", "an old key") 
+# OBJECTS
+key  = safe2.new_object("key", "an old key") 
 book = bookshelf.new_object("book", "an old book")
 
-# And we can make the key required to open the office
-safe.make_requirement(book)
+# REQUIREMENTS
+safe2.make_requirement(book)
 trapdoor.make_requirement(key)
 
-# Let's add a special phrase. We can attach this phrase to any object, location or actor,
-# and the phrase will trigger only if that object or actor is present or at the given location.
+# PHRASE
 book.add_phrase("look at book", Say("'19th Century Painters'. You flip through the book and find a page for Edvard Munch. In 1893, Munch painted the famous painting The Scream"))
 key.add_phrase("look at key", Say("An old key"))
 
+# PLAYER
 player = game.new_player(room)
 
+# TEST SCRIPT
+test_script = Script("test",
+"""
+> go left
+> take book
+> go right
+> go forward
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+
+""")
+
+player2 = player.add_script(test_script)
+
+
+# RUN
 game.run()
