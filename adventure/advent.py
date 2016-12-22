@@ -1735,7 +1735,7 @@ class Animal(Actor):
       return
 
     # filter out any locked or forbidden locations
-    exits = list()
+    exits = list()    
     for (d, c) in self.location.exits.items():
       if c.is_locked():
         continue
