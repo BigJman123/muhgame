@@ -102,6 +102,16 @@ DESCRIPTION = 2
 CONTENTS = 3
 DEBUG = 4
 
+
+
+
+
+
+
+
+
+
+''' COLORS CLASS '''
 class Colors:
   '''
   Colors class:
@@ -200,6 +210,16 @@ def proper_list_from_dict(d):
     buf.append(add_article(name))
   return "".join(buf)
 
+
+
+
+
+
+
+
+
+
+''' BASE CLASS '''
 # Base is a place to put default inplementations of methods that everything
 # in the game should support (eg save/restore, how to respond to verbs etc)
 class Base(object):
@@ -266,6 +286,16 @@ class Base(object):
   def output(self, text, message_type = 0):
     self.game.output(text, message_type)
 
+
+
+
+
+
+
+
+
+
+''' BASEVERB CLASS '''
 class BaseVerb(Base):
   def __init__(self, function, name):
     Base.__init__(self, name)
@@ -289,6 +319,16 @@ class BaseVerb(Base):
           result = True
     return result
 
+
+
+
+
+
+
+
+
+
+''' DIE CLASS '''
 class Die(BaseVerb):
   def __init__(self, string, name = ""):
     BaseVerb.__init__(self, None, name)
@@ -302,6 +342,16 @@ class Die(BaseVerb):
     actor.terminate()
     return True
 
+
+
+
+
+
+
+
+
+
+''' SAY CLASS '''
 class Say(BaseVerb):
   def __init__(self, string, name = ""):
     BaseVerb.__init__(self, None, name)
@@ -311,6 +361,16 @@ class Say(BaseVerb):
     self.bound_to.game.output(self.string, FEEDBACK)
     return True
 
+
+
+
+
+
+
+
+
+
+''' SAYONNOUN CLASS '''
 class SayOnNoun(Say):    
   def __init__(self, string, noun, name = ""):
     Say.__init__(self, string, name)
@@ -322,10 +382,30 @@ class SayOnNoun(Say):
     self.bound_to.game.output(self.string, FEEDBACK)
     return True
 
+
+
+
+
+
+
+
+
+
+''' SAYONSELF CLASS '''
 class SayOnSelf(SayOnNoun):
   def __init__(self, string, name = ""):
     SayOnNoun.__init__(self, string, None, name)
 
+
+
+
+
+
+
+
+
+
+''' VERB CLASS '''
 # Verb is used for passing in an unbound global function to the constructor
 class Verb(BaseVerb):
   def __init__(self, function, name = ""):
@@ -375,6 +455,15 @@ def get_noun(words, things):
   return (noun, words)
 
 
+
+
+
+
+
+
+
+
+''' DEVTOOLSBASE CLASS '''
 # A class to hold utility methods useful during game development, but
 # not needed for normal game play.  Import the advent_devtools module
 # to get the full version of the tools.
@@ -398,6 +487,16 @@ def register_devtools(devtools):
   global _devtools
   _devtools = devtools
       
+
+
+
+
+
+
+
+
+
+''' GAME CLASS '''
 # The Game: container for hero, locations, robots, animals etc.
 class Game(Base):
   def __init__(self, name="bwx-adventure"):
@@ -793,6 +892,15 @@ class Game(Base):
     self.output("\ngoodbye!\n", FEEDBACK)
 
 
+
+
+
+
+
+
+
+
+''' OBJECT CLASS '''
 class Object(Base):
   # name: short name of this thing
   # description: full description
@@ -809,6 +917,16 @@ class Object(Base):
     else:
       return self.description(self)
 
+
+
+
+
+
+
+
+
+
+''' CONSUMABELE CLASS '''
 class Consumable(Object):
   def __init__(self, name, desc, verb, replacement = None):
     Object.__init__(self, name, desc)
@@ -825,17 +943,47 @@ class Consumable(Object):
                                  actor.verborverbs, self.description))
     self.verb.act(actor, noun, words)
     return True
-    
+
+
+
+
+
+
+
+
+
+
+''' FOOD CLASS '''    
 class Food(Consumable):
   def __init__(self, name, desc, verb, replacement = None):
     Consumable.__init__(self, name, desc, verb, replacement)
     self.consume_term = "eat"
-    
+
+
+
+
+
+
+
+
+
+
+''' DRINK CLASS '''
 class Drink(Consumable):
   def __init__(self, name, desc, verb, replacement = None):
     Consumable.__init__(self, name, desc, verb, replacement)
     self.consume_term = "drink"
 
+
+
+
+
+
+
+
+
+
+''' LOCKABLE CLASS '''
 class Lockable(Base):
   def __init__(self, name):
     Base.__init__(self, name)
@@ -881,6 +1029,16 @@ class Lockable(Base):
                 proper_list_from_dict(self.requirements), FEEDBACK)
     return False
 
+
+
+
+
+
+
+
+
+
+''' CONTAINER CLASS '''
 class Container(Lockable):
   def __init__(self, name, description):
     Lockable.__init__(self, name)
@@ -948,7 +1106,16 @@ class Container(Lockable):
   def is_open(self):
     return not self.flag('closed')
 
-        
+
+
+
+
+
+
+
+
+
+''' LOCATION CLASS '''
 # A "location" is a place in the game.
 class Location(Lockable):
   # name: short name of this location
@@ -1082,6 +1249,15 @@ class Location(Lockable):
       print "exit: %s" % key
 
 
+
+
+
+
+
+
+
+
+''' CONNECTION CLASS '''
 # A "connection" connects point A to point B. Connections are
 # always described from the point of view of point A.
 class Connection(Lockable):
@@ -1102,6 +1278,15 @@ class Connection(Lockable):
     self.way_ba = way_ba
 
 
+
+
+
+
+
+
+
+
+''' ACTOR CLASS '''
 # An actor in the game
 class Actor(Base):
   # location
@@ -1359,6 +1544,16 @@ class Actor(Base):
   def set_next_script_response(self, response):
     return True
   
+
+
+
+
+
+
+
+
+
+  ''' SCRIPT CLASS '''
 # Scripts are sequences of instructions for Robots to execute
 class Script(Base):
   def __init__(self, name, lines=None, game=None):
@@ -1537,6 +1732,15 @@ class Script(Base):
     f.close()
 
 
+
+
+
+
+
+
+
+
+''' ROBOT CLASS '''
 # Robots are actors which accept commands to perform actions.
 # They can also record and run scripts.
 class Robot(Actor):
@@ -1712,6 +1916,15 @@ class Robot(Actor):
     return True
 
 
+
+
+
+
+
+
+
+
+''' PLAYER CLASS '''
 # Player derives from Robot so that we can record and run scripts as the player
 class Player(Robot):
   def __init__(self):
@@ -1721,6 +1934,16 @@ class Player(Robot):
     self.isare = "are"
     self.verborverbs = ""
 
+
+
+
+
+
+
+
+
+
+''' ANIMAL CLASS '''
 # Animals are actors which may act autonomously each turn
 class Animal(Actor):
   def __init__(self, name):
@@ -1764,6 +1987,15 @@ class Animal(Actor):
                                                exitConn.name), FEEDBACK)
 
 
+
+
+
+
+
+
+
+
+''' PET CLASS '''
 # A pet is an actor with free will (Animal) that you can also command to do things (Robot)
 class Pet(Robot, Animal):
   def __init__(self, name):
@@ -1777,6 +2009,15 @@ class Pet(Robot, Animal):
       self.random_move(observer_loc)
 
 
+
+
+
+
+
+
+
+
+''' SHARE CLASS '''
 class Share(object):
   def __init__(self):
     self.hostname = None
