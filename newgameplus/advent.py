@@ -14,6 +14,7 @@ import time
 
 # "directions" are all the ways you can describe going some way; 
 # they are code-visible names for directions for adventure authors
+# direction_names is a variable that contains a list of directions
 direction_names = ["NORTH","SOUTH","EAST","WEST","UP","DOWN","RIGHT","LEFT",
                    "IN","OUT","FORWARD","BACK",
                    "NORTHWEST","NORTHEAST","SOUTHWEST","SOUTHEAST"]
